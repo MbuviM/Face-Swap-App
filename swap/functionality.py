@@ -105,13 +105,23 @@ def swap_faces_real_time(source_image_path, resize_width=500):
         if destination_landmarks is not None:
             destination_landmarks = np.array(destination_landmarks * [frame.shape[1], frame.shape[0]], dtype=np.int32)
 
-            # Swap faces in the frame
+            # Mask for blending
+            seamless_clone_mask = np.zeros_like(frame)
+
             for idx in indices:
                 t1 = [tuple(source_landmarks[i]) for i in idx]
                 t2 = [tuple(destination_landmarks[i]) for i in idx]
-                warp_triangle(load_source_image, frame, t1, t2)
+                warp_triangle(load_source_image, seamless_clone_mask, t1, t2)
 
-        cv2.imshow('Swapped Faces', frame)
+            # Create the convex hull mask for the seamless cloning process
+            hull = cv2.convexHull(destination_landmarks)
+            cv2.fillConvexPoly(seamless_clone_mask, hull, (255, 255, 255))
+
+            # Use seamless cloning to blend the faces
+            center = (destination_landmarks[:,0].mean().astype(int), destination_landmarks[:,1].mean().astype(int))
+            output = cv2.seamlessClone(seamless_clone_mask, frame, seamless_clone_mask[:,:,0], center, cv2.NORMAL_CLONE)
+
+            cv2.imshow('Swapped Faces', output)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -121,5 +131,5 @@ def swap_faces_real_time(source_image_path, resize_width=500):
 
 if __name__ == '__main__':
     print("Current Working Directory:", os.getcwd())
-    source_image = 'images\source.jpg'
+    source_image = 'source.jpg'
     swap_faces_real_time(source_image)
