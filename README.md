@@ -1,11 +1,10 @@
-# Face Swap Application
+# Face Masking Application
 
-This project implements a face swapping application using OpenCV and MediaPipe. The application can perform face swapping in real-time using a webcam, which can be useful for anonymity or entertainment purposes.
+This project implements a face masking application using OpenCV and MediaPipe. The application can perform face masking in real-time using a webcam, which can be useful for anonymity or entertainment purposes.
 
 ## Features
 
-- Real-time face detection and swapping using a webcam.
-- Seamless blending of swapped faces for a natural look.
+- Real-time face detection and masking using a webcam.
 - Resize and adjust images for better face alignment.
 
 ## Requirements
